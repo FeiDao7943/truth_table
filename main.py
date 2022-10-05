@@ -372,7 +372,7 @@ def function_expression(digi1, digi2, digi3, digi4, var, gate_class):
             e.g. "and12_3", but not "and13_2"
         4.Not more than 3 digits behind the name of gate, if beyond
             it is possible to combine with functions of gate
-        5.Not nore than 4 variables plug in function of gate, if beyond
+        5.Not more than 4 variables plug in function of gate, if beyond
             it is possible to combine with functions of gate
         6.Use variable 'f' to return the final output
         7.The variable of function 'main' in rwp 395 means the number of total variables
