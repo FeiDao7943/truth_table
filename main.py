@@ -8,11 +8,11 @@ def check_input(a, b, c, d, num):
             count += 1
     if num != 1:
         if count < num:
-            print("too less value!")
+            print("Too less value!")
             exit()
     if num == 1:
         if count > num:
-            print("too much value!")
+            print("Too much value!")
             exit()
     return 1
 
@@ -97,7 +97,7 @@ def xnor_gate(a=-1, b=-1, c=-1, d=-1):
 def binary(nums):
     nums += 1
     if nums > 16:
-        print("too much value!")
+        print("Too much value!")
         exit()
     bin_list = np.zeros(4)
     for number in range(nums):
@@ -110,29 +110,92 @@ def binary(nums):
     return bin_list[0], bin_list[1], bin_list[2], bin_list[3]
 
 
-if __name__ == "__main__":
+def main(var_dig):
+    if var_dig < 2:
+        print('Too less digital!')
+        exit()
+    if var_dig > 4:
+        print('Too much digital!')
+        exit()
     print("truth table:")
     space_holder = '       '
-    print(space_holder, 'a  b  c  d  |  f')
-    print(space_holder, "------------|---")
-    vir = 4
-    max_num = pow(2, vir)
+    if var_dig == 4:
+        print(space_holder, 'a  b  c  d  |  f')
+        print(space_holder, "------------|---")
+    if var_dig == 3:
+        print(space_holder, 'b  c  d  |  f')
+        print(space_holder, "---------|---")
+    if var_dig == 2:
+        print(space_holder, 'c  d  |  f')
+        print(space_holder, "------|---")
+    var = var_dig
+    max_num = pow(2, var)
     for i in range(max_num):
-        dig1, dig2, dig3, dig4 = binary(i)
-        print(space_holder,
-              str(int(dig1)), '', str(int(dig2)), '',
-              str(int(dig3)), '', str(int(dig4)), '',
-              end=' |  ')
+        digital1, digital2, digital3, digital4 = binary(i)
+        if var_dig == 4:
+            print(space_holder,
+                  str(int(digital1)), '', str(int(digital2)), '',
+                  str(int(digital3)), '', str(int(digital4)), '',
+                  end=' |  ')
+        if var_dig == 3:
+            print(space_holder,
+                  str(int(digital2)), '',
+                  str(int(digital3)), '', str(int(digital4)), '',
+                  end=' |  ')
+        if var_dig == 2:
+            print(space_holder,
+                  str(int(digital3)), '', str(int(digital4)), '',
+                  end=' |  ')
+        final_result = function_expression(digital1, digital2,
+                                           digital3, digital4,
+                                           var_dig)
+        print(final_result)
 
-        # 输入对应的逻辑电路
-        # -------------------------------------------
 
-        tem1 = not_gate(dig1)
+def function_expression(digi1, digi2, digi3, digi4, var):
+    if var == 4:
+        dig1 = digi1
+        dig2 = digi2
+        dig3 = digi3
+        dig4 = digi4
 
-        tem2 = nand_gate(tem1, dig2)
-        tem3 = xnor_gate(dig3, dig4)
+        minus1 = not_gate(dig1)
+        minus2 = not_gate(dig2)
+        minus3 = not_gate(dig3)
+        minus4 = not_gate(dig4)
 
-        f = or_gate(tem2, tem3)
+    if var == 3:
+        dig1 = digi2
+        dig2 = digi3
+        dig3 = digi4
 
-        # -------------------------------------------
-        print(f)
+        minus1 = not_gate(dig1)
+        minus2 = not_gate(dig2)
+        minus3 = not_gate(dig3)
+
+    if var == 2:
+        dig1 = digi3
+        dig2 = digi4
+
+        minus1 = not_gate(dig1)
+        minus2 = not_gate(dig2)
+
+
+    # enter the expression of tne circuit function
+
+    tem5 = and_gate(dig2, dig4)
+    tem6 = and_gate(minus1, minus2, minus3)
+    tem7 = and_gate(minus1, dig2)
+    tem8 = and_gate(minus1, dig3, dig4)
+    tem9 = and_gate(dig1, minus2, minus4)
+
+    tem10 = or_gate(tem5, tem6, tem7, tem8)
+    f = or_gate(tem10, tem9)
+    # --------------------------------------------
+
+    return f
+
+
+if __name__ == "__main__":
+    main(4)
+
