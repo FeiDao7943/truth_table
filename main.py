@@ -1,3 +1,8 @@
+# -- coding: utf-8 --
+# @time : 10/5/2022
+# @author : unusualroutetaker
+# @email : feidaofeidao@outlook.com
+
 import numpy as np
 
 
