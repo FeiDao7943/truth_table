@@ -183,14 +183,14 @@ def function_expression(digi1, digi2, digi3, digi4, var):
 
     # enter the expression of tne circuit function
 
-    tem5 = and_gate(dig2, dig4)
-    tem6 = and_gate(minus1, minus2, minus3)
-    tem7 = and_gate(minus1, dig2)
-    tem8 = and_gate(minus1, dig3, dig4)
-    tem9 = and_gate(dig1, minus2, minus4)
+    tem1 = and_gate(dig1, dig2, dig4)
+    tem2 = and_gate(minus1, minus2, minus3)
+    tem3 = and_gate(minus1, dig2)
+    tem4 = and_gate(minus1, dig3, dig4)
+    tem5 = and_gate(dig1, minus2, minus4)
 
-    tem10 = or_gate(tem5, tem6, tem7, tem8)
-    f = or_gate(tem10, tem9)
+    tem6 = or_gate(tem1, tem2, tem3, tem4)
+    f = or_gate(tem6, tem5)
     # --------------------------------------------
 
     return f
