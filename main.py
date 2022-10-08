@@ -4,6 +4,7 @@
 # @email : feidaofeidao@outlook.com
 
 import numpy as np
+import wx
 
 
 def check_input(a, b, c, d, num):
@@ -245,66 +246,63 @@ def main(var_dig):
 
 
 def value_list_cal(gate, dig1, dig2, dig3, dig4, minus1, minus2, minus3, minus4):
-    value_list = np.zeros(50)
-    value_list[0] = gate(dig1, dig2)
-    value_list[1] = gate(minus1, dig2)
-    value_list[2] = gate(dig1, minus2)
+    position_list = [0, dig1, dig2, dig3, dig4, minus1, minus2, minus3, minus4]
+    value_list = np.zeros(56)
 
-    value_list[3] = gate(dig1, dig3)
-    value_list[4] = gate(minus1, dig3)
-    value_list[5] = gate(dig1, minus3)
-
-    value_list[6] = gate(dig1, dig4)
-    value_list[7] = gate(minus1, dig4)
-    value_list[8] = gate(dig1, minus4)
-
-    value_list[9] = gate(dig2, dig3)
-    value_list[10] = gate(minus2, dig3)
-    value_list[11] = gate(dig2, minus3)
-
-    value_list[12] = gate(dig2, dig4)
-    value_list[13] = gate(minus2, dig4)
-    value_list[14] = gate(dig2, minus4)
-
-    value_list[15] = gate(dig3, dig4)
-    value_list[16] = gate(minus3, dig4)
-    value_list[17] = gate(dig3, minus4)
-
-    value_list[18] = gate(dig1, dig2, dig3)
-    value_list[19] = gate(dig1, dig2, minus3)
-    value_list[20] = gate(dig1, minus2, dig3)
-    value_list[21] = gate(minus1, dig2, dig3)
-    value_list[22] = gate(dig1, minus2, minus3)
-    value_list[23] = gate(minus1, dig2, minus3)
-    value_list[24] = gate(minus1, minus2, dig3)
-    value_list[25] = gate(minus1, minus2, minus3)
-
-    value_list[26] = gate(dig1, dig2, dig4)
-    value_list[27] = gate(dig1, dig2, minus4)
-    value_list[28] = gate(dig1, minus2, dig4)
-    value_list[29] = gate(minus1, dig2, dig4)
-    value_list[30] = gate(dig1, minus2, minus4)
-    value_list[31] = gate(minus1, dig2, minus4)
-    value_list[32] = gate(minus1, minus2, dig4)
-    value_list[33] = gate(minus1, minus2, minus4)
-
-    value_list[34] = gate(dig1, dig3, dig4)
-    value_list[35] = gate(dig1, dig3, minus4)
-    value_list[36] = gate(dig1, minus3, dig4)
-    value_list[37] = gate(minus1, dig3, dig4)
-    value_list[38] = gate(dig1, minus3, minus4)
-    value_list[39] = gate(minus1, dig3, minus4)
-    value_list[40] = gate(minus1, minus3, dig4)
-    value_list[41] = gate(minus1, minus3, minus4)
-
-    value_list[42] = gate(dig2, dig3, dig4)
-    value_list[43] = gate(dig2, dig3, minus4)
-    value_list[44] = gate(dig2, minus3, dig4)
-    value_list[45] = gate(minus2, dig3, dig4)
-    value_list[46] = gate(dig2, minus3, minus4)
-    value_list[47] = gate(minus2, dig3, minus4)
-    value_list[48] = gate(minus2, minus3, dig4)
-    value_list[49] = gate(minus2, minus3, minus4)
+    for calcu in ('two_dig', 'three_dig'):
+        final_logic_list = []
+        if calcu == 'three_dig':
+            digits_num = 3
+            list_term = 24
+        if calcu == 'two_dig':
+            digits_num = 2
+            list_term = 0
+        for digit1 in (1, 2, 3, 4):
+            for digit2 in (1, 2, 3, 4):
+                if digit1 < digit2:
+                    for digit3 in (1, 2, 3, 4):
+                        if ((calcu == 'three_dig') and (digit2 < digit3)) \
+                                or ((calcu == 'two_dig') and (digit3 == 1)):
+                            # print(digit1, digit2, digit3)
+                            if calcu == 'three_dig':
+                                list_num = (digit1, digit2, digit3)
+                            if calcu == 'two_dig':
+                                list_num = (digit1, digit2)
+                            bin_list = np.zeros(digits_num)
+                            for number in range(pow(2, digits_num)):
+                                for digits in range(3):
+                                    if not number:
+                                        break
+                                    bin_list[digits_num - 1 - digits] = int(number % 2) * -1
+                                    number = (number - (number % 2)) / 2
+                                for check in range(digits_num):
+                                    if bin_list[check] == 0:
+                                        bin_list[check] = 1
+                                tem_logic_list = bin_list * list_num
+                                # print(tem_logic_list, end='  ')
+                                final_logic_list.append(tem_logic_list)
+        final_logic_list = np.asarray(final_logic_list)
+        # print(final_logic_list.shape)
+        # transform
+        for groups in range(final_logic_list.shape[0]):
+            tem_group = final_logic_list[groups][:]
+            # print(tem_group)
+            for digits in range(digits_num):
+                if tem_group[digits] < 0:
+                    tem_group[digits] = tem_group[digits] * -1 + 4
+                # print(tem_group)
+            posi1 = position_list[int(tem_group[0])]
+            posi2 = position_list[int(tem_group[1])]
+            if calcu == 'three_dig':
+                posi3 = position_list[int(tem_group[2])]
+                value_list[list_term] = gate(posi1, posi2, posi3)
+            if calcu == 'two_dig':
+                value_list[list_term] = gate(posi1, posi2)
+                # print(tem_group, end='  ')
+                #
+                # print(value_list[list_term])
+            # print(value_list[list_term]-value_list_2[list_term])
+            list_term += 1
     return value_list
 
 
@@ -314,7 +312,6 @@ def function_expression(digi1, digi2, digi3, digi4, var, gate_class):
         dig2 = digi2
         dig3 = digi3
         dig4 = digi4
-
         minus1 = gate_class.not_gate(dig1)
         minus2 = gate_class.not_gate(dig2)
         minus3 = gate_class.not_gate(dig3)
@@ -325,7 +322,6 @@ def function_expression(digi1, digi2, digi3, digi4, var, gate_class):
         dig2 = digi3
         dig3 = digi4
         dig4 = 0
-
         minus1 = gate_class.not_gate(dig1)
         minus2 = gate_class.not_gate(dig2)
         minus3 = gate_class.not_gate(dig3)
@@ -336,17 +332,17 @@ def function_expression(digi1, digi2, digi3, digi4, var, gate_class):
         dig2 = digi4
         dig3 = 0
         dig4 = 0
-
         minus1 = gate_class.not_gate(dig1)
         minus2 = gate_class.not_gate(dig2)
         minus3 = 0
         minus4 = 0
-    list_dig = ['12', '1_2', '12_', '13', '1_3', '13_', '14', '1_4', '14_',
-                '23', '2_3', '23_', '24', '2_4', '24_', '34', '3_4', '34_',
-                '123', '123_', '12_3', '1_23', '12_3_', '1_23_', '1_2_3', '1_2_3_',
-                '124', '124_', '12_4', '1_24', '12_4_', '1_24_', '1_2_4', '1_2_4_',
-                '134', '134_', '13_4', '1_34', '13_4_', '1_34_', '1_3_4', '1_3_4_',
-                '234', '234_', '23_4', '2_34', '23_4_', '2_34_', '2_3_4', '2_3_4_',
+    list_dig = ['12', '12_', '1_2', '1_2_', '13', '13_', '1_3', '1_3_',
+                '14', '14_', '1_4', '1_4_', '23', '23_', '2_3', '2_3_',
+                '24', '24_', '2_4', '2_4_', '34', '34_', '3_4', '3_4_',
+                '123', '123_', '12_3', '12_3_', '1_23', '1_23_', '1_2_3', '1_2_3_',
+                '124', '124_', '12_4', '12_4_', '1_24', '1_24_', '1_2_4', '1_2_4_',
+                '134', '134_', '13_4', '13_4_', '1_34', '1_34_', '1_3_4', '1_3_4_',
+                '234', '234_', '23_4', '23_4_', '2_34', '2_34_', '2_3_4', '2_3_4_',
                 ]
 
     for gates_name in ('and', 'or', 'nand', 'nor', 'xor', 'xnor'):
@@ -392,9 +388,18 @@ def function_expression(digi1, digi2, digi3, digi4, var, gate_class):
     return f
 
 
+def gui_window():
+    gui = wx.App()
+    frame = wx.Frame(None, -1, 'truth table calculator')
+    frame.Show(True)
+    gui.MainLoop()
+
+
 if __name__ == "__main__":
     '''
     The variable of function 'main' in rwp 395 means the number of total variables
         remember change the correct number just in 2, 3 or 4 before runing
     '''
     main(4)
+    # gui_window()
+
